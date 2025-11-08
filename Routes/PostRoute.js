@@ -1,14 +1,16 @@
 import express from 'express'
-import { createPost, deletePost, getAllPosts, getPost, updatePost } from '../Controllers/PostController.js'
+import { createPost, deletePost, getAllPosts, getPost, updatePost, updatePicture, updateCoverPicture } from '../Controllers/PostController.js'
 import authUser from '../utils/authMiddleware.js'
 import { uploadPost } from '../utils/upload.js'
 
 const router = express.Router()
 
-router.get('/all', authUser, getAllPosts)
-router.post('/create', authUser, uploadPost.array('media'), createPost)
-router.get('/:id', authUser, getPost)
-router.put('/:id', authUser, updatePost)
-router.delete('/:id', authUser, deletePost)
+router.get('/all', getAllPosts)
+router.post('/create', uploadPost.array('media'), createPost)
+router.put('/picture/:id', uploadPost.single('profilePicture'), updatePicture)
+router.put('/cover/:id', uploadPost.single('coverPicture'), updateCoverPicture)
+router.get('/:id', getPost)
+router.put('/:id', updatePost)
+router.delete('/:id', deletePost)
 
 export default router

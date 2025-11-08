@@ -18,9 +18,9 @@ const corsOptions = {
         if (process.env.NODE_ENV === 'development') {
             callback(null, ['http://localhost:5173']);
         } else if (process.env.NODE_ENV === 'test') {
-            callback(null, ['https://ghenny-1.onrender.com']);
+            callback(null, ['https://carteboss-front.vercel.app']);
         } else {
-            callback(null, ['http://localhost:5173']);
+            callback(null, ['https://carteboss-front.vercel.app']);
         }
     },
     methods: ["GET", "PUT", "POST", "DELETE"],

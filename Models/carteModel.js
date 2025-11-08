@@ -8,6 +8,9 @@ const CarteSchema = mongoose.Schema(
         coverPicture: {
             url: String,
         },
+        companyPicture: {
+            url: String,
+        },
 
 
         // Identité

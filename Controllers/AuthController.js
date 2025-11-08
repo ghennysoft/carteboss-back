@@ -60,33 +60,39 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {  
     const {data, password} = req.body
+    console.log(req.body);
     
     try {
         if(!data, !password){
           res.status(400).json({message: 'Remplissez tous les champs'})
         } else {
-            let user;
-            if(data.slice(0, 1) == '+') {
-                user = await UserModel.findOne({ email: data });
-            } else {
-                user = await UserModel.findOne({ username: data });
-            }
-
-            if(!user){
+            const user_email = await UserModel.findOne({ email: data });
+            const user_username = await UserModel.findOne({ username: data });
+            if(!user_email && !user_username){
                 res.status(400).json({message:'Identifiants incorrects' }) 
             } else {
-                const auth = await bcrypt.compare(password,user.password)
+                let auth;
+                if(user_email) auth = await bcrypt.compare(password,user_email.password)
+                if(user_username) auth = await bcrypt.compare(password,user_username.password)
                 if (!auth) {
                     res.status(400).json({message:'Identifiants incorrects'})
                 } else {
-
-                    const profile = await UserModel.findById(user._id)
-                    
+                    let profile;
+                    if(user_email) profile = await UserModel.findById(user_email._id)
+                    if(user_username) profile = await UserModel.findById(user_username._id)
+                        
                     const access_token = createAccessToken({user: profile});
                     const refresh_token = createRefreshToken();
+                        
+                    if(user_email) {
+                        user_email.refreshTokens.push(refresh_token);
+                        await user_email.save();
+                    }
 
-                    user.refreshTokens.push(refresh_token);
-                    await user.save();
+                    if(user_username) {
+                        user_username.refreshTokens.push(refresh_token);
+                        await user_username.save();
+                    }
                     
                     res.status(200).json({
                         'profile': profile,

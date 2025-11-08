@@ -1,66 +1,69 @@
 import PostModel from "../Models/postModel.js"
 import ProfileModel from "../Models/profileModel.js";
+import CarteModel from "../Models/carteModel.js";
 import dotenv from 'dotenv';
+import axios from "axios";
 
 dotenv.config(); 
 
 export const createPost = async (req, res) => {
-    const {author, postType, target, content, postBg} = req.body;
-    let postMedia = [];
-    if(req.files.length!==0){
-        req.files.forEach(file => {
-            postMedia.push({
-                type: file.contentType.split("/")[0],
-                url: process.env.SPACES_ENDPOINT_CDN+file.key
-            });
-        });
-    }
+    console.log(req.body);
     
     try {
-        const newPost = new PostModel({
-           author,
-           postType,
-           target,
-           content,
-           media: postMedia,
-           postBg: JSON.parse(postBg),
-        });
+        const newPost = new CarteModel(req.body);
         await newPost.save();
-
-        // Récupérer les abonnés de l'utilisateur
-        const user = await ProfileModel.findById(newPost.author).populate('userId followers');
-        const followers = user.followers;
+        console.log(newPost)
         
-        res.status(201).json({newPost, user})
+        res.status(201).json(newPost)
     } catch (error) {
         res.status(500).json(error)
     }
 }
 
+export const updatePicture = async (req, res) => {
+    const paramId = req.params.id;
+    let image = {};
+    if(req.file){
+        image = {
+            url: process.env.SPACES_ENDPOINT_CDN+req.file.key
+        };
+        try {
+            const picture = await CarteModel.findByIdAndUpdate(paramId, {
+                $set: {profilePicture: image}
+            });
+            res.status(200).json({"picture": picture})
+        } catch (error) {
+            res.status(500).json(error)            
+        }
+    } else {
+        res.status(403).json("Access Denied, you can only update your profile!")
+    }
+}
+
+export const updateCoverPicture = async (req, res) => {
+    const paramId = req.params.id;
+    let image = {};
+    if(req.file){
+        image = {
+            url: process.env.SPACES_ENDPOINT_CDN+req.file.key
+        };
+        try {
+            const picture = await CarteModel.findByIdAndUpdate(paramId, {
+                $set: {coverPicture: image}
+            });
+            res.status(200).json({"picture": picture})
+        } catch (error) {
+            res.status(500).json(error)            
+        }
+    } else {
+        res.status(403).json("Access Denied, you can only update your profile!")
+    }
+}
+
 export const getAllPosts = async (req, res) => {  
-    const currentUser = req.user;  
     try {
-        const posts = await PostModel.find().sort({createdAt: -1})
-        .populate({
-            path: 'comments',
-            populate: {
-                path: 'author',
-                select: 'userId profilePicture birthday status school option university filiere profession entreprise',
-                populate: {
-                    path: 'userId',
-                    select: 'username firstname lastname',
-                }
-            }
-        })
-        .populate({
-            path: 'author',
-            select: 'userId profilePicture birthday status school option university filiere profession entreprise',
-            populate: {
-                path: 'userId',
-                select: 'username firstname lastname',
-            }
-        })
-        res.status(200).json({currentUser, posts})
+        const posts = await CarteModel.find().sort({createdAt: -1})
+        res.status(200).json(posts)
     } catch (error) {
         res.status(500).json(error)
     }
@@ -69,31 +72,14 @@ export const getAllPosts = async (req, res) => {
 export const getPost = async (req, res) => {
     const id = req.params.id;
     try {
-        const post = await PostModel.findById(id)
-        .populate({
-            path: 'comments',
-            populate: {
-                path: 'author',
-                select: 'userId profilePicture birthday status school option university filiere profession entreprise',
-                populate: {
-                    path: 'userId',
-                    select: 'username firstname lastname',
-                }
-            }
-        })
-        .populate({
-            path: 'author',
-            select: 'userId profilePicture birthday status school option university filiere profession entreprise',
-            populate: {
-                path: 'userId',
-                select: 'username firstname lastname',
-            }
-        })
+        const post = await CarteModel.findById(id)
         res.status(200).json(post)
     } catch (error) {
         res.status(500).json(error)
     }
 }
+
+
 
 export const updatePost = async (req, res) => {
     const postId = req.params.id;
