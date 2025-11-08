@@ -11,12 +11,17 @@ const CarteSchema = mongoose.Schema(
         companyPicture: {
             url: String,
         },
+        qrCode: {
+            data: String,
+            url: String,
+        },
 
 
         // Identité
         name: {
             type: String,
             trim: true,
+            required: true,
         },
         profession: {
             type: String,
@@ -45,28 +50,36 @@ const CarteSchema = mongoose.Schema(
         
         // Liens
         website: {
-            type: String,
+            title: String,
+            url: String,
         },
         facebook: {
-            type: String,
+            title: String,
+            url: String,
         },
         whatsapp: {
-            type: String,
+            title: String,
+            url: String,
         },
         instagram: {
-            type: String,
+            title: String,
+            url: String,
         },
         linkedin: {
-            type: String,
+            title: String,
+            url: String,
         },
         x: {
-            type: String,
+            title: String,
+            url: String,
         },
         tiktok: {
-            type: String,
+            title: String,
+            url: String,
         },
         youtube: {
-            type: String,
+            title: String,
+            url: String,
         },
     },
     {timestamps: true},

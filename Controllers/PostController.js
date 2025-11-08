@@ -60,6 +60,29 @@ export const updateCoverPicture = async (req, res) => {
     }
 }
 
+export const updateQrCode = async (req, res) => {
+    const paramId = req.params.id;
+    let image = {};
+    console.log(req.file)
+    console.log(req.files)
+    console.log(req.body)
+    if(req.file){
+        image = {
+            url: process.env.SPACES_ENDPOINT_CDN+req.file.key
+        };
+        try {
+            const picture = await CarteModel.findByIdAndUpdate(paramId, {
+                $set: {qrCode: {data: req.body.data, url: process.env.SPACES_ENDPOINT_CDN+req.file.key}}
+            });
+            res.status(200).json({"picture": picture})
+        } catch (error) {
+            res.status(500).json(error)            
+        }
+    } else {
+        res.status(403).json("Access Denied, you can only update your profile!")
+    }
+}
+
 export const getAllPosts = async (req, res) => {  
     try {
         const posts = await CarteModel.find().sort({createdAt: -1})
