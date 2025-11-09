@@ -1,16 +1,77 @@
-import PostModel from "../Models/postModel.js"
-import ProfileModel from "../Models/profileModel.js";
 import CarteModel from "../Models/carteModel.js";
 import dotenv from 'dotenv';
-import axios from "axios";
 
 dotenv.config(); 
 
 export const createPost = async (req, res) => {
-    console.log(req.body);
+    const {
+        name,
+        profession,
+        company,
+        bio,
+        phoneNumber,
+        email,
+        address,
+        websiteTitle,
+        websiteLink,
+        facebookTitle,
+        facebookLink,
+        whatsappTitle,
+        whatsappLink,
+        instagramTitle,
+        instagramLink,
+        linkedinTitle,
+        linkedinLink,
+        xTitle,
+        xLink,
+        tiktokTitle,
+        tiktokLink,
+        youtubeTitle,
+        youtubeLink,
+    } = req.body;
     
     try {
-        const newPost = new CarteModel(req.body);
+        const newPost = new CarteModel({
+            name,
+            profession,
+            company,
+            bio,
+            phoneNumber,
+            email,
+            address,
+            website: {
+                title: websiteTitle,
+                url: websiteLink
+            },
+            facebook: {
+                title: facebookTitle,
+                url: facebookLink
+            },
+            whatsapp: {
+                title: whatsappTitle,
+                url: whatsappLink
+            },
+            instagram: {
+                title: instagramTitle,
+                url: instagramLink
+            },
+            linkedin: {
+                title: linkedinTitle,
+                url: linkedinLink
+            },
+            x: {
+                title: xTitle,
+                url: xLink
+            },
+            tiktok: {
+                title: tiktokTitle,
+                url: tiktokLink
+            },
+            youtube: {
+                title: youtubeTitle,
+                url: youtubeLink
+            },
+        });
         await newPost.save();
         console.log(newPost)
         
@@ -50,6 +111,26 @@ export const updateCoverPicture = async (req, res) => {
         try {
             const picture = await CarteModel.findByIdAndUpdate(paramId, {
                 $set: {coverPicture: image}
+            });
+            res.status(200).json({"picture": picture})
+        } catch (error) {
+            res.status(500).json(error)            
+        }
+    } else {
+        res.status(403).json("Access Denied, you can only update your profile!")
+    }
+}
+
+export const updateCompanyLogo = async (req, res) => {
+    const paramId = req.params.id;
+    let image = {};
+    if(req.file){
+        image = {
+            url: process.env.SPACES_ENDPOINT_CDN+req.file.key
+        };
+        try {
+            const picture = await CarteModel.findByIdAndUpdate(paramId, {
+                $set: {companyLogo: image}
             });
             res.status(200).json({"picture": picture})
         } catch (error) {
@@ -102,19 +183,85 @@ export const getPost = async (req, res) => {
     }
 }
 
-
-
 export const updatePost = async (req, res) => {
     const postId = req.params.id;
-    const {currentUserId} = req.body;
+    const {
+        name,
+        profession,
+        company,
+        bio,
+        phoneNumber,
+        email,
+        address,
+        websiteTitle,
+        websiteLink,
+        facebookTitle,
+        facebookLink,
+        whatsappTitle,
+        whatsappLink,
+        instagramTitle,
+        instagramLink,
+        linkedinTitle,
+        linkedinLink,
+        xTitle,
+        xLink,
+        tiktokTitle,
+        tiktokLink,
+        youtubeTitle,
+        youtubeLink,
+    } = req.body;
     try {
-        const post = await PostModel.findById(postId)
-        if(post.userId === currentUserId) {
-            await post.updateOne({$set:req.body})
+        const post = await CarteModel.findById(postId)
+        // if(post.userId === currentUserId) {
+            await post.updateOne(
+                {
+                    $set: {
+                        name,
+                        profession,
+                        company,
+                        bio,
+                        phoneNumber,
+                        email,
+                        address,
+                        website: {
+                            title: websiteTitle,
+                            url: websiteLink
+                        },
+                        facebook: {
+                            title: facebookTitle,
+                            url: facebookLink
+                        },
+                        whatsapp: {
+                            title: whatsappTitle,
+                            url: whatsappLink
+                        },
+                        instagram: {
+                            title: instagramTitle,
+                            url: instagramLink
+                        },
+                        linkedin: {
+                            title: linkedinTitle,
+                            url: linkedinLink
+                        },
+                        x: {
+                            title: xTitle,
+                            url: xLink
+                        },
+                        tiktok: {
+                            title: tiktokTitle,
+                            url: tiktokLink
+                        },
+                        youtube: {
+                            title: youtubeTitle,
+                            url: youtubeLink
+                        },
+                    }
+                }
+            )
             res.status(200).json('Post Updated!')
-        } else {
-            res.status(403).json('Action Forbidden')
-        }
+        // } else {
+        //     res.status(403).json('Action Forbidden')
+        // }
     } catch (error) {
         res.status(500).json(error)
     }
@@ -124,7 +271,7 @@ export const deletePost = async (req, res) => {
     const postId = req.params.id;
     const {currentUserId} = req.body;
     try {
-        const post = await PostModel.findById(postId)
+        const post = await CarteModel.findById(postId)
         if(post.userId === currentUserId) {
             await post.deleteOne();
             res.status(200).json('Post Deleted!')

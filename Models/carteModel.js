@@ -8,7 +8,7 @@ const CarteSchema = mongoose.Schema(
         coverPicture: {
             url: String,
         },
-        companyPicture: {
+        companyLogo: {
             url: String,
         },
         qrCode: {
@@ -25,9 +25,11 @@ const CarteSchema = mongoose.Schema(
         },
         profession: {
             type: String,
+            required: true,
         },
         company: {
             type: String,
+            required: true,
         },
         bio: {
             type: String,

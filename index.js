@@ -7,7 +7,6 @@ import helmet from 'helmet';
 import cors from 'cors';
 
 import AuthRoute from './Routes/AuthRoute.js';
-import UserRoute from './Routes/ProfileRoute.js';
 import PostRoute from './Routes/PostRoute.js';
 
 dotenv.config();
@@ -71,7 +70,6 @@ MONGO_URL
 
 // Usage of route
 app.use('/api/auth', AuthRoute)
-app.use('/api/profile', UserRoute)
 app.use('/api/post', PostRoute)
 
 app.use((err, req, res, next) => {
