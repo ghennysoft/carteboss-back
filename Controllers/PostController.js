@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config(); 
 
 export const createPost = async (req, res) => {
+    console.log(req.body);
     const {
         name,
         profession,
@@ -74,9 +75,10 @@ export const createPost = async (req, res) => {
         });
         await newPost.save();
         console.log(newPost)
-        
+
         res.status(201).json(newPost)
     } catch (error) {
+        console.log(error)
         res.status(500).json(error)
     }
 }
@@ -94,6 +96,7 @@ export const updatePicture = async (req, res) => {
             });
             res.status(200).json({"picture": picture})
         } catch (error) {
+            console.log(error)
             res.status(500).json(error)            
         }
     } else {
@@ -134,6 +137,7 @@ export const updateCompanyLogo = async (req, res) => {
             });
             res.status(200).json({"picture": picture})
         } catch (error) {
+            console.log(error)
             res.status(500).json(error)            
         }
     } else {
@@ -267,17 +271,42 @@ export const updatePost = async (req, res) => {
     }
 } 
 
+export const updateDeletedPost = async (req, res) => {
+    const postId = req.params.id;
+    try {
+        const post = await CarteModel.findById(postId)
+        // if(post.userId === currentUserId) {
+        
+            await post.deleteOne();
+            res.status(200).json('Post Deleted!')
+            // await post.updateOne(
+            //     {
+            //         $set: {
+            //             deteted: true,
+            //             detetedAt: Date.now(),
+            //         }
+            //     }
+            // )
+            // res.status(200).json('Post Delete Updated!')
+        // } else {
+        //     res.status(403).json('Action Forbidden')
+        // }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+} 
+
 export const deletePost = async (req, res) => {
     const postId = req.params.id;
     const {currentUserId} = req.body;
     try {
         const post = await CarteModel.findById(postId)
-        if(post.userId === currentUserId) {
+        // if(post.userId === currentUserId) {
             await post.deleteOne();
             res.status(200).json('Post Deleted!')
-        } else {
-            res.status(403).json('Action Forbidden')
-        }
+        // } else {
+        //     res.status(403).json('Action Forbidden')
+        // }
     } catch (error) {
         res.status(500).json(error)
     }

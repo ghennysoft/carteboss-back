@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const CarteSchema = mongoose.Schema(
     {        
@@ -82,6 +83,15 @@ const CarteSchema = mongoose.Schema(
         youtube: {
             title: String,
             url: String,
+        },
+
+        deleted: {
+            type: Boolean,
+            default: false
+        },
+        deletedAt: {
+            type: Date,
+            default: Date.now
         },
     },
     {timestamps: true},
