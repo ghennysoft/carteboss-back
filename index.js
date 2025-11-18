@@ -17,9 +17,9 @@ const corsOptions = {
         if (process.env.NODE_ENV === 'development') {
             callback(null, ['http://localhost:5173']);
         } else if (process.env.NODE_ENV === 'test') {
-            callback(null, ['https://carteboss-front.vercel.app']);
+            callback(null, ['https://card.lacarteboss.com']);
         } else {
-            callback(null, ['https://carteboss-front.vercel.app']);
+            callback(null, ['https://card.lacarteboss.com']);
         }
     },
     methods: ["GET", "PUT", "POST", "DELETE"],
