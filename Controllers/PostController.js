@@ -215,59 +215,55 @@ export const updatePost = async (req, res) => {
         youtubeLink,
     } = req.body;
     try {
-        const post = await CarteModel.findById(postId)
-        // if(post.userId === currentUserId) {
-            await post.updateOne(
-                {
-                    $set: {
-                        name,
-                        profession,
-                        company,
-                        bio,
-                        phoneNumber,
-                        email,
-                        address,
-                        website: {
-                            title: websiteTitle,
-                            url: websiteLink
-                        },
-                        facebook: {
-                            title: facebookTitle,
-                            url: facebookLink
-                        },
-                        whatsapp: {
-                            title: whatsappTitle,
-                            url: whatsappLink
-                        },
-                        instagram: {
-                            title: instagramTitle,
-                            url: instagramLink
-                        },
-                        linkedin: {
-                            title: linkedinTitle,
-                            url: linkedinLink
-                        },
-                        x: {
-                            title: xTitle,
-                            url: xLink
-                        },
-                        tiktok: {
-                            title: tiktokTitle,
-                            url: tiktokLink
-                        },
-                        youtube: {
-                            title: youtubeTitle,
-                            url: youtubeLink
-                        },
-                    }
+        const post = await CarteModel.findByIdAndUpdate(postId, {
+                $set: {
+                    name,
+                    profession,
+                    company,
+                    bio,
+                    phoneNumber,
+                    email,
+                    address,
+                    website: {
+                        title: websiteTitle,
+                        url: websiteLink
+                    },
+                    facebook: {
+                        title: facebookTitle,
+                        url: facebookLink
+                    },
+                    whatsapp: {
+                        title: whatsappTitle,
+                        url: whatsappLink
+                    },
+                    instagram: {
+                        title: instagramTitle,
+                        url: instagramLink
+                    },
+                    linkedin: {
+                        title: linkedinTitle,
+                        url: linkedinLink
+                    },
+                    x: {
+                        title: xTitle,
+                        url: xLink
+                    },
+                    tiktok: {
+                        title: tiktokTitle,
+                        url: tiktokLink
+                    },
+                    youtube: {
+                        title: youtubeTitle,
+                        url: youtubeLink
+                    },
                 }
-            )
-            res.status(200).json('Post Updated!')
-        // } else {
-        //     res.status(403).json('Action Forbidden')
-        // }
+            }
+        )
+        await post.save();
+        res.status(200).json(post)
     } catch (error) {
-        res.status(500).json(error)
+        console.log(error);
+        res.status(500).json(error);
     }
 } 
 
